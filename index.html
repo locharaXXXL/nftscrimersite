@@ -2,20 +2,38 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>tip scrimer</title>
+  <title>Видео Скример</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      width: 100%;
       background-color: black;
       overflow: hidden;
     }
-    video {
+
+    #startButton {
       position: absolute;
-      top: 0;
-      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      color: white;
+      font-size: 3em;
+      border: none;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    #videoContainer {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    video {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -24,10 +42,47 @@
 </head>
 <body>
 
-  <video autoplay muted>
-    <source src="video.mp4" type="video/mp4">
-    Чет старая весрия, обновись.
-  </video>
+  <button id="startButton">НАЖМИ</button>
+
+  <div id="videoContainer">
+    <video id="scareVideo">
+      <source src="video.mp4" type="video/mp4">
+      Ваш браузер не поддерживает видео.
+    </video>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const button = document.getElementById('startButton');
+      const video = document.getElementById('scareVideo');
+      const container = document.getElementById('videoContainer');
+
+      button.addEventListener('click', async () => {
+        console.log('Кнопка нажата');
+        button.style.display = 'none';
+        container.style.display = 'block';
+
+        try {
+          await video.play();
+          console.log('Видео воспроизводится');
+
+          if (video.requestFullscreen) {
+            await video.requestFullscreen();
+          } else if (video.webkitRequestFullscreen) {
+            await video.webkitRequestFullscreen();
+          } else if (video.msRequestFullscreen) {
+            await video.msRequestFullscreen();
+          }
+        } catch (err) {
+          console.error('чёт ошибка', err);
+        }
+      });
+
+      video.addEventListener('ended', () => {
+        location.reload();
+      });
+    });
+  </script>
 
 </body>
 </html>
